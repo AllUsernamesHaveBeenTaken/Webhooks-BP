@@ -37,7 +37,6 @@ app.post('/api_retrieval_webhook', function (req, res) {
 app.listen(process.env.PORT || 8080);
 
 function sendWebhook(endpoint, payload){
-  console.log(payload);
   axios.defaults.headers.post.signature = sign(JSON.stringify(payload), 'Secret123');
   axios.post(endpoint, {...payload})
   .then(function (response) {

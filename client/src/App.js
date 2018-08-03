@@ -50,7 +50,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      endpoint: 'https://webhook.site/bdcd3b7d-e71e-4a6e-b58d-78df7e269e74'
+      endpoint: 'https://webhook.site/82622838-00f2-4143-8244-aaa4775bd5b3'
     }
 
     this.handleChange = this.handleChange.bind(this);
