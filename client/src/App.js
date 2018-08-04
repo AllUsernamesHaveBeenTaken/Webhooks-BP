@@ -32,7 +32,14 @@ const inputWrapper = {
   margin: 10
 }
 
-const endpointInput = {
+const inputItem = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '40%'
+}
+
+const input = {
   borderRadius: '50px',
 	border: '3px solid #fff',
 	width: '100%',
@@ -40,24 +47,32 @@ const endpointInput = {
   textAlign: 'center'
 }
 
-const endpointText = {
+const title = {
   color: '#fff',
   overflow: 'hidden',
   fontSize: '24px'
+}
+
+const inputText = {
+  color: '#fff',
+  fontSize: '14px',
+  marginRight: 15
 }
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      endpoint: 'https://webhook.site/82622838-00f2-4143-8244-aaa4775bd5b3'
+      endpoint: 'http://localhost:8000/webhook_endpoint',
+      username: 'seppesnoeck',
+      password: 'Azerty123'
     }
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(event) {
-    this.setState({endpoint: event.target.value});
+    this.setState({[event.target.name]: event.target.value});
   }
 
   _onButtonClick = (payloadType) => {
@@ -77,7 +92,14 @@ class App extends Component {
       default:
         break;
     }
-    touchAPI(API_Endpoint, {endpoint: this.state.endpoint, ...payload})
+    touchAPI(API_Endpoint, {
+      endpoint: this.state.endpoint, 
+      payload: {...payload},
+      user: {
+        username: this.state.username,
+        password: this.state.password
+      }
+    })
   }
 
   _whichPayload = (type) => {
@@ -110,8 +132,21 @@ class App extends Component {
     return (
       <div style={appWrapper}>
         <div style={inputWrapper}>
-          <p style={endpointText}>Insert your endpoint below</p>
-          <input type="text" value={this.state.endpoint} onChange={this.handleChange} style={endpointInput}/>
+          <p style={title}>&#x1F447; Compose your subscription &#x1F447;</p>
+          <div style={inputItem}>
+            <p style={inputText}>Endpoint</p>
+            <input type="text" value={this.state.endpoint} name="endpoint" onChange={this.handleChange} style={input}/>
+          </div>
+          <div style={inputItem}>
+            <p style={inputText}>Username</p>
+            <input type="text" value={this.state.username} name="username" onChange={this.handleChange} style={input}/>
+          </div>
+          <div style={inputItem}>
+            <p style={inputText}>Password</p>
+            <input type="password" value={this.state.password} name="password" onChange={this.handleChange} style={input}/>
+          </div>
+          <p style={title}>Webhooks</p>          
+          <p style={inputText}>Switches voor interests!</p>          
         </div>
         <div style={buttonsWrapper}>
           <SentButton text={'Signed Webhook'} type={'signed'} onButtonClick={this._onButtonClick}/>
