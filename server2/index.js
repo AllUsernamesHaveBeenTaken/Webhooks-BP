@@ -34,4 +34,10 @@ app.post('/webhook_endpoint', function (req, res) {
   res.send('Webhook received!');
 });
 
+app.post('/500', function (req, res) {
+  console.log('/500');
+  res.status(500)
+  res.send('Server faulty!')
+});
+
 app.listen(process.env.PORT || 8000);

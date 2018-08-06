@@ -1,12 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
-const axios = require('axios');
-const CryptoJS = require("crypto-js");
 const app = express();
 
 const User = require('./models/user.js');
 const Payload = require('./models/payload.js');
+const { retryWithBackoff } = require('./retryWithBackoff.js');
+const { sendWebhook, sign } = require('./webhooks.js');
 
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(bodyParser.json());
@@ -25,14 +25,18 @@ app.post('/signin', User.signin);
 
 app.post('/signed_webhook', function (req, res) {
   console.log('/signed_webhook', req.body);
-  sendWebhook(req.body.endpoint, req.body.payload);
+  retryWithBackoff(sendWebhook, req.body.endpoint, req.body.payload
+  , 10, 100, function(result) {
+    console.log('the result is',result);
+  });
+  
   return res.send(JSON.stringify(req.body.payload));
 });
 
 app.post('/http_auth_webhook', function (req, res) {
   console.log('/http_auth_webhook', req.body);
   if (req.body.user === undefined) {
-    return res.status(404)
+    return res.status(401)
   }
 
   User.signinINTERN({body: {...req.body.user}}).then(function(user){
@@ -64,18 +68,3 @@ app.post('/retrieve_payload', function (req, res) {
 });
 
 app.listen(process.env.PORT || 8080);
-
-function sendWebhook(endpoint, payload){
-  axios.defaults.headers.post.signature = sign(JSON.stringify(payload), 'Secret123');
-  axios.post(endpoint, {...payload})
-  .then(function (response) {
-    console.log(response.status + response.statusText);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-}
-
-function sign(payload, key) {
-  return CryptoJS.HmacSHA256(payload, key).toString();
-}
