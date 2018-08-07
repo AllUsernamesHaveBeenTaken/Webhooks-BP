@@ -23,6 +23,8 @@ All relevant data is logged in the console.
    
 1. Create a postgress db named 'webhooks'
 
+1. Instal knex globaly `npm install knex -g
+
 1. In /server/db `knex migrate:latest`
    
 1. Start servers: `node or nodemon index.js`
