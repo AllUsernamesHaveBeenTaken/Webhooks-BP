@@ -1,3 +1,5 @@
+export { payloads } from './eventPayloads'
+
 export const touchAPI = (endpoint, payload) => {
   fetch(endpoint, {
     method: 'POST', 

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { SentButton } from './components'
-import { touchAPI } from './webhooks'
+import { SentButton, EventSwitch } from './components'
+import { touchAPI, payloads } from './webhooks'
 
 const buttonsWrapper = {
   display: 'flex',
@@ -14,21 +14,23 @@ const buttonsWrapper = {
 const appWrapper = {
   display: 'flex',
   flexDirection: 'column',
-  //justifyContent: 'center',  
-  //alignItems: 'center',  
+  justifyContent: 'center',
   margin: '0 auto',
   width: '50%',
-
-  position: 'absolute',
-  top: '25%',
-  left: '25%'
+  height: document.documentElement.clientHeight
 }
 
 const inputWrapper = {
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
   alignItems: 'center',
+  margin: 10
+}
+
+const webhooksWrapper = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
   margin: 10
 }
 
@@ -50,7 +52,8 @@ const input = {
 const title = {
   color: '#fff',
   overflow: 'hidden',
-  fontSize: '24px'
+  fontSize: '24px',
+  alignSelf: 'center'
 }
 
 const inputText = {
@@ -65,7 +68,12 @@ class App extends Component {
     this.state = {
       endpoint: 'http://localhost:8000/webhook_endpoint',
       username: 'seppesnoeck',
-      password: 'Azerty123'
+      password: 'Azerty123',
+      userLiked: false,
+      userPosted: false, 
+      newUser: false, 
+      userUpdatedDetails: false, 
+      userUploadedPhoto: false, 
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -75,10 +83,10 @@ class App extends Component {
     this.setState({[event.target.name]: event.target.value});
   }
 
-  _onButtonClick = (payloadType) => {
+  _onButtonClick = (webhookType) => {
     let API_Endpoint
-    let payload = this._whichPayload(payloadType)
-    switch (payloadType) {
+    let type = this._whichWebhookType(webhookType)
+    switch (webhookType) {
       case 'signed':
         API_Endpoint = '/signed_webhook'
         break;
@@ -94,20 +102,21 @@ class App extends Component {
     }
     touchAPI(API_Endpoint, {
       endpoint: this.state.endpoint, 
-      payload: {...payload},
+      webhooks_type: {...type},
       user: {
         username: this.state.username,
         password: this.state.password
-      }
+      },
+      payload: {...payloads[this._randomEventPicker()]}
     })
   }
 
-  _whichPayload = (type) => {
+  _whichWebhookType = (type) => {
     switch (type) {
       case 'signed':
         return {
           'type': 'SIGNED',
-          'event': 'SIGNED BUTTON CLICK'
+          'event': 'SIGNED BUTTON CLICK',
         }
         break;
       case 'http':
@@ -122,10 +131,30 @@ class App extends Component {
           'event': 'API RETRIEVAL CLICK'
         }
         break;
-    
       default:
         break;
     }
+  }
+
+  _handleCheckedChange = (event) => this.setState({[event.target.name]: !this.state[event.target.name]})
+  
+  _randomEventPicker = () => {
+    let chooses =  ['userLiked', 'userPosted', 'newUser', 'userUpdatedDetails', 'userUploadedPhoto']
+    let choice = false
+    let check = false
+    
+    chooses.forEach(choice => {
+      if (this.state[choice]) {
+        check = this.state[choice]
+      }
+    });
+
+    if (check === true) {
+      do {
+        choice = chooses[Math.floor(Math.random() * (chooses.length - 0)) + 0]
+        } while (this.state[choice] === false)
+    } 
+    return choice
   }
 
   render() {
@@ -145,8 +174,14 @@ class App extends Component {
             <p style={inputText}>Password</p>
             <input type="password" value={this.state.password} name="password" onChange={this.handleChange} style={input}/>
           </div>
-          <p style={title}>Webhooks</p>          
-          <p style={inputText}>Switches voor interests!</p>          
+          <div style={webhooksWrapper} >
+            <p style={title}>Webhooks</p>          
+            <EventSwitch text={'User liked something'} checked={this.state.userLiked} onChange={this._handleCheckedChange} name="userLiked" />          
+            <EventSwitch text={'User posted someting'} checked={this.state.userPosted} onChange={this._handleCheckedChange} name="userPosted" />          
+            <EventSwitch text={'New user registered'} checked={this.state.newUser} onChange={this._handleCheckedChange} name="newUser" />          
+            <EventSwitch text={'User updated their details'} checked={this.state.userUpdatedDetails} onChange={this._handleCheckedChange} name="userUpdatedDetails" />          
+            <EventSwitch text={'User uploaded a new photo'} checked={this.state.userUploadedPhoto} onChange={this._handleCheckedChange} name="userUploadedPhoto" />             
+          </div>
         </div>
         <div style={buttonsWrapper}>
           <SentButton text={'Signed Webhook'} type={'signed'} onButtonClick={this._onButtonClick}/>

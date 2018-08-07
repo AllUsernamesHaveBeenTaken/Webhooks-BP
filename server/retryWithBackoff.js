@@ -11,7 +11,7 @@ async function retryWithBackoff(toTry, endpoint, payload, max, delay, callback) 
           }, delay);
 
       } else {
-           console.log('we give up');   
+           console.log('Server can\'t send webhooks to client, contact client developers.');   
       }
   }
 }
