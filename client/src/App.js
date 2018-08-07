@@ -186,7 +186,7 @@ class App extends Component {
         <div style={buttonsWrapper}>
           <SentButton text={'Signed Webhook'} type={'signed'} onButtonClick={this._onButtonClick}/>
           <SentButton text={'HTTP Auth Webhook'} type={'http'} onButtonClick={this._onButtonClick} />
-          <SentButton text={'API Retieval Webhook'} type={'api'} onButtonClick={this._onButtonClick} />
+          <SentButton text={'API Retrieval Webhook'} type={'api'} onButtonClick={this._onButtonClick} />
         </div>
       </div>
     );

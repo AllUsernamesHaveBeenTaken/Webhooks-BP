@@ -6,8 +6,8 @@ const crypto = require('crypto');
 
 const savePayload = (payload) => {
   return database.raw(
-    "INSERT INTO payloads (payload, created_at) VALUES (?, ?) RETURNING id, payload, created_at",
-    [payload, new Date()]
+    "INSERT INTO payloads (payload, isDelivered, created_at) VALUES (?, ?, ?) RETURNING id, payload, isDelivered, created_at",
+    [payload, false, new Date()]
   )
   .then((data) => data.rows[0])
 }
@@ -17,7 +17,13 @@ const findPayload = (id) => {
     .then((data) => data.rows[0])
 }
 
+const isDelivered = (id) => {
+  return database.raw("UPDATE payloads SET isDelivered = ? WHERE id = ?", [true, id])
+    .then((data) => data.rows[0])
+}
+
 module.exports = {
   savePayload,
-  findPayload
+  findPayload,
+  isDelivered
 }
