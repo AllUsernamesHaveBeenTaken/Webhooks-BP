@@ -102,16 +102,19 @@ class App extends Component {
       default:
         break;
     }
-    touchAPI(API_Endpoint, {
-      endpoint: this.state.endpoint, 
-      webhooks_type: {...type},
-      user: {
-        username: this.state.username,
-        password: this.state.password
-      },
-      secret: this.state.secret,
-      payload: {...payloads[this._randomEventPicker()]}
-    })
+    let choice = this._randomEventPicker();
+    if (choice) {
+      touchAPI(API_Endpoint, {
+        endpoint: this.state.endpoint, 
+        webhooks_type: {...type},
+        user: {
+          username: this.state.username,
+          password: this.state.password
+        },
+        secret: this.state.secret,
+        payload: {...payloads[choice]}
+      })
+    }
   }
 
   _whichWebhookType = (type) => {
