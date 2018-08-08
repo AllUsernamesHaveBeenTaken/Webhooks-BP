@@ -37,7 +37,7 @@ Aaaand you're guud to go.
 
 **You need an account for authenticated calls.**
 
-You can use my predefined credentials after runnen this cURL call:
+You can use my predefined credentials after running this cURL call:
 ````
 curl "http://localhost:8080/signup" \
   --include \
