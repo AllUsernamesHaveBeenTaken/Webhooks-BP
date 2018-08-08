@@ -23,6 +23,8 @@ All relevant data is logged in the console.
    
 1. Create a postgress db named 'webhooks'
 
+1. Instal knex globaly `npm install knex -g`
+
 1. In /server/db `knex migrate:latest`
    
 1. Start servers: `node or nodemon index.js`
@@ -35,7 +37,7 @@ Aaaand you're guud to go.
 
 **You need an account for authenticated calls.**
 
-You can use my predefined credentials after runnen this cURL call:
+You can use my predefined credentials after running this cURL call:
 ````
 curl "http://localhost:8080/signup" \
   --include \
