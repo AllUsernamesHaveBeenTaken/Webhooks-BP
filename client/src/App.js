@@ -38,7 +38,7 @@ const inputItem = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  width: '40%'
+  width: '50%'
 }
 
 const input = {
@@ -52,14 +52,15 @@ const input = {
 const title = {
   color: '#fff',
   overflow: 'hidden',
-  fontSize: '24px',
+  fontSize: '30px',
   alignSelf: 'center'
 }
 
 const inputText = {
   color: '#fff',
   fontSize: '14px',
-  marginRight: 15
+  marginRight: 15,
+  width: '50%'
 }
 
 class App extends Component {
@@ -69,6 +70,7 @@ class App extends Component {
       endpoint: 'http://localhost:8000/webhook_endpoint',
       username: 'seppesnoeck',
       password: 'Azerty123',
+      secret: 'Azerty123',
       userLiked: false,
       userPosted: false, 
       newUser: false, 
@@ -107,6 +109,7 @@ class App extends Component {
         username: this.state.username,
         password: this.state.password
       },
+      secret: this.state.secret,
       payload: {...payloads[this._randomEventPicker()]}
     })
   }
@@ -173,6 +176,10 @@ class App extends Component {
           <div style={inputItem}>
             <p style={inputText}>Password</p>
             <input type="password" value={this.state.password} name="password" onChange={this.handleChange} style={input}/>
+          </div>
+          <div style={inputItem}>
+            <p style={inputText}>Shared secret</p>
+            <input type="password" value={this.state.secret} name="secret" onChange={this.handleChange} style={input}/>
           </div>
           <div style={webhooksWrapper} >
             <p style={title}>Webhooks</p>          
