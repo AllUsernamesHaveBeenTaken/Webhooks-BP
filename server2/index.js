@@ -18,7 +18,7 @@ app.get('/', function (req, res) {
 app.post('/webhook_endpoint_retrieval', function (req, res) {
   console.log('-----------------------')  
   console.log(req.body)
-  axios.post('http://localhost:8080/retrieve_payload', {callback: 'http://localhost:8000/webhook_endpoint', ...req.body})
+  axios.post('http://localhost:8080/retrieve_payload', {callback: 'http://localhost:8000/webhook_endpoint', secret: 'Azerty123',...req.body})
   .then(function (response) {
     console.log(response.status + response.statusText);
   })
